@@ -101,6 +101,15 @@ func GitCommit(commit string, amend bool) (err error) {
 	return nil
 }
 
+func TypeTransform(an interface{}) (newAn interface{}) {
+	if an != nil {
+		if v, ok := an.(string); ok {
+			return strings.Split(v, ":")[0]
+		}
+	}
+	return an
+}
+
 // the questions to ask
 var qs = []*survey.Question{
 	{
@@ -110,14 +119,18 @@ var qs = []*survey.Question{
 			Options: typeOptions,
 			Default: typeOptions[0],
 		},
+		Transform: TypeTransform,
+		Validate:  survey.Required,
 	},
 	{
-		Name:   "scope",
-		Prompt: &survey.Input{Message: "说明本次提交的影响范围:"},
+		Name:     "scope",
+		Prompt:   &survey.Input{Message: "说明本次提交的影响范围:"},
+		Validate: survey.Required,
 	},
 	{
-		Name:   "subject",
-		Prompt: &survey.Input{Message: "对本次提交进行简短描述:"},
+		Name:     "subject",
+		Prompt:   &survey.Input{Message: "对本次提交进行简短描述:"},
+		Validate: survey.Required,
 	},
 }
 
